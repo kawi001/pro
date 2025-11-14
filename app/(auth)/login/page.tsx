@@ -13,53 +13,53 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError('');
-  setLoading(true);
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
-  console.log('📤 Login attempt:', email); // เพิ่ม log
+    console.log('📤 Login attempt:', email); // เพิ่ม log
 
-  try {
-    const result = await signIn('credentials', {
-      redirect: false,
-      email,
-      password,
-    });
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      });
 
-    console.log('📥 SignIn result:', result); // เพิ่ม log
+      console.log('📥 SignIn result:', result); // เพิ่ม log
 
-    if (result?.error) {
-      console.log('❌ Login error:', result.error);
-      setError('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
-      setLoading(false);
-      return;
-    }
-
-    if (result?.ok) {
-      console.log('✅ Login successful, fetching session...');
-      
-      // Redirect ตาม role (ดึงจาก session)
-      const response = await fetch('/api/auth/session');
-      const session = await response.json();
-      
-      console.log('📋 Session data:', session);
-
-      if (session?.user?.roleId === 1) {
-        router.push('/dashboard/seeker');
-      } else if (session?.user?.roleId === 2) {
-        router.push('/dashboard/shop');
-      } else {
-        router.push('/');
+      if (result?.error) {
+        console.log('❌ Login error:', result.error);
+        setError('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+        setLoading(false);
+        return;
       }
-      
-      router.refresh();
+
+      if (result?.ok) {
+        console.log('✅ Login successful, fetching session...');
+
+        // Redirect ตาม role (ดึงจาก session)
+        const response = await fetch('/api/auth/session');
+        const session = await response.json();
+
+        console.log('📋 Session data:', session);
+
+        if (session?.user?.roleId === 1) {
+          router.push('/dashboard/seeker');
+        } else if (session?.user?.roleId === 2) {
+          router.push('/dashboard/shop');
+        } else {
+          router.push('/');
+        }
+
+        router.refresh();
+      }
+    } catch (error) {
+      console.error('❌ Login catch error:', error);
+      setError('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('❌ Login catch error:', error);
-    setError('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4">
@@ -135,7 +135,7 @@ export default function LoginPage() {
                 />
                 <span className="ml-2 text-gray-600">จดจำฉันไว้</span>
               </label>
-              <a href="#" className="text-indigo-600 hover:text-indigo-700 font-medium">
+              <a href="/forgot-password" className="text-indigo-600 hover:text-indigo-700 font-medium">
                 ลืมรหัสผ่าน?
               </a>
             </div>
